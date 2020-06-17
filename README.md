@@ -7,7 +7,17 @@ https://www.kaggle.com/c/quora-insincere-questions-classification
 I'm using GloVe for vectorization. Here's the official documentation.
 https://nlp.stanford.edu/projects/glove/
 
-And I've commented on each code segment for better understanding.
+The dataset is quite huge, so please download it from 
+https://www.kaggle.com/c/quora-insincere-questions-classification/data
 
 
-P.S. I am new with NLP. Correct me wherever I'm wrong.
+And I've commented description on each code segment for better understanding.
+
+This code can be used for any problem, you just need to change the dataset. You can also try with the different word2vec algorithms like:
+  
+  GoogleNews-vectors-negative300 - https://code.google.com/archive/p/word2vec/
+  paragram_300_sl999 - https://cogcomp.org/page/resource_view/106
+  wiki-news-300d-1M - https://fasttext.cc/docs/en/english-vectors.html
+
+
+P.S. I am new to NLP. Correct me wherever I'm wrong.
