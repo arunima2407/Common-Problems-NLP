@@ -5,11 +5,7 @@ Created on Tue Jun 16 17:27:34 2020
 @author: aruchakr
 """
 
-from __future__ import print_function, division
-from builtins import range
-# Note: you may need to update your version of future
-# sudo pip install -U future
-
+#IMPORTING LIBRARIES
 
 import os
 import sys
@@ -27,17 +23,9 @@ from sklearn.metrics import roc_auc_score
 
 import keras.backend as K
 
-"""
-MAX_SEQUENCE_LENGTH = 100
-MAX_VOCAB_SIZE = 20000
-EMBEDDING_DIM = 50
-VALIDATION_SPLIT = 0.2
-BATCH_SIZE = 128
-EPOCHS = 5
-"""
 
+#LOADING WORD VECTORS
 
-print('Loading word vectors...')
 word2vec = {}
 with open(os.path.join('glove.6B.300d.txt'), encoding = "utf-8") as f:
   # is just a space-separated text file in the format:
@@ -50,24 +38,31 @@ with open(os.path.join('glove.6B.300d.txt'), encoding = "utf-8") as f:
 print('Found %s word vectors.' % len(word2vec))
 
 
-print('Loading in comments...')
+#LOADING THE DATASET
 
 train = pd.read_csv("train.csv")
 sentences = train["question_text"].values
 target = train["target"].values
 
+
+#TOKENISING EACH SENTENCE FROM THE DATASET
+
 tokenizer = Tokenizer(num_words=20000) #vectorize a text corpus, by turning each text into either a sequence of integers (each integer being the index of a token in a dictionary) or into a vector where the coefficient for each token could be binary, based on word count, based on tf-idf.
 tokenizer.fit_on_texts(sentences) #Updates internal vocabulary based on a list of texts.
 sequences = tokenizer.texts_to_sequences(sentences) #Converts a text to a sequence of words (or tokens).
 
+
+#CREATING AN ARRAY FOR WORD AND THEIR INDEX 
 word2idx = tokenizer.word_index #indexing each word from vector list
 print('Found %s unique tokens.' % len(word2idx))
 
+
+#PADDING EACH VECTOR WITH 0 TO ENSURE UNIFORM LENGTH OF 100
 data = pad_sequences(sequences,100)
 print('Shape of data tensor:', data.shape)
 
 
-print('Filling pre-trained embeddings...')
+#CREATING EMBEDDING MATRIX
 num_words = min(20000, len(word2idx) + 1)
 embedding_matrix = np.zeros((num_words, 300)) #fill array embedding_matrix with 0s with size num_words, embedding_matrix i.e. 20000,50
 
@@ -79,6 +74,7 @@ for word, i in word2idx.items():
             embedding_matrix[i] = embedding1
 
 
+#CREATING EMBEDDING LAYER TO FEED INTO THE LSTM
 embedding_layer = Embedding( #Turns positive integers (indexes) into dense vectors of fixed size.
   num_words,
   300,
@@ -89,12 +85,11 @@ embedding_layer = Embedding( #Turns positive integers (indexes) into dense vecto
 
 
 
-print('Building model...')
 
-# create an LSTM network with a single LSTM
+#CREATING MODEL
 input_ = Input(shape=(100,))
 x = embedding_layer(input_)
-# x = LSTM(15, return_sequences=True)(x)
+
 x = Bidirectional(LSTM(15, return_sequences=True))(x)
 x = GlobalMaxPool1D()(x)
 output = Dense(1, activation="sigmoid")(x)
@@ -107,7 +102,7 @@ model.compile(
 )
 
 
-print('Training model...')
+#TRAINING THE MODEL
 r = model.fit(
   data,
   target,
@@ -119,10 +114,15 @@ r = model.fit(
 print("Done with the Training")
 print("Predictions:\n")
 
-p = model.predict(data)
+
+#PREDICTING THE DATA
 train['target'] = model.predict(data, verbose=1) #verbose to get logs
 
+
+#SAVING THE MODEL
 model.save("quora.pb")
 
+
+#CREATING A NEW CSV FILE WITH THE PREDICTED DATA
 import csv
 train.to_csv("trained.csv",index=False)
