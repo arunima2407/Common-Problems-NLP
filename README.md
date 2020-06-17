@@ -15,9 +15,9 @@ And I've commented description on each code segment for better understanding.
 
 This code can be used for any problem, you just need to change the dataset. You can also try with the different word2vec algorithms like:
   
-  GoogleNews-vectors-negative300 - https://code.google.com/archive/p/word2vec/
-  paragram_300_sl999 - https://cogcomp.org/page/resource_view/106
-  wiki-news-300d-1M - https://fasttext.cc/docs/en/english-vectors.html
+GoogleNews-vectors-negative300 - https://code.google.com/archive/p/word2vec/
+paragram_300_sl999 - https://cogcomp.org/page/resource_view/106
+wiki-news-300d-1M - https://fasttext.cc/docs/en/english-vectors.html
 
-
+I am attaching my pretraine model. Feel free to download it and use on a similar dataset if you're not ready to go through the training process (took me 3 hours).
 P.S. I am new to NLP. Correct me wherever I'm wrong.
